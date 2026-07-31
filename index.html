@@ -3,121 +3,489 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Museum of Us</title>
+    <title>Museum of Us - Friendship Edition</title>
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Fredoka:wght@500;600;700&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+    
     <style>
+        :root {
+            --yellow: #FFD028;
+            --pink: #FF85A2;
+            --purple: #B292FF;
+            --mint: #4EEDA4;
+            --door-red: #FF4B4B;
+            --bg-dots: #f3eedd;
+            --border: #1E1E1E;
+        }
+
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
         }
+
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-dots);
+            background-image: radial-gradient(var(--border) 1px, transparent 1px);
+            background-size: 18px 18px;
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 20px;
+            padding: 15px;
         }
-        .card {
-            background: #ffffff;
-            padding: 40px 30px;
-            border-radius: 20px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-            text-align: center;
-            max-width: 500px;
+
+        /* Phone Frame */
+        .phone-container {
             width: 100%;
+            max-width: 380px;
+            background: #FFF;
+            border: 4px solid var(--border);
+            border-radius: 35px;
+            box-shadow: 8px 8px 0px var(--border);
+            overflow: hidden;
+            position: relative;
+            min-height: 680px;
+            display: flex;
+            flex-direction: column;
         }
-        .header-tag {
-            font-size: 14px;
-            color: #888;
-            text-transform: uppercase;
-            letter-spacing: 2px;
+
+        .notch {
+            width: 120px;
+            height: 18px;
+            background: var(--border);
+            margin: 0 auto;
+            border-bottom-left-radius: 12px;
+            border-bottom-right-radius: 12px;
+        }
+
+        .screen {
+            padding: 20px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        h1.title {
+            font-family: 'Fredoka', cursive;
+            font-size: 24px;
+            color: var(--border);
+            margin-top: 10px;
+            line-height: 1.2;
+        }
+
+        .badge {
+            background: var(--yellow);
+            border: 2px solid var(--border);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-family: 'Fredoka', cursive;
+            font-size: 12px;
+            display: inline-block;
             margin-bottom: 10px;
+            box-shadow: 2px 2px 0px var(--border);
         }
-        h1 {
-            color: #2c3e50;
-            font-size: 28px;
-            margin-bottom: 15px;
+
+        .custom-input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 3px solid var(--border);
+            border-radius: 15px;
+            font-size: 14px;
+            font-family: 'Poppins', sans-serif;
+            margin-bottom: 12px;
+            outline: none;
+            box-shadow: 3px 3px 0px var(--yellow);
         }
-        .names {
-            font-size: 18px;
-            color: #555;
-            margin-bottom: 25px;
+
+        .btn-main {
+            background: var(--yellow);
+            border: 3px solid var(--border);
+            padding: 12px 20px;
+            border-radius: 20px;
+            font-family: 'Fredoka', cursive;
+            font-size: 16px;
+            cursor: pointer;
+            box-shadow: 4px 4px 0px var(--border);
+            width: 100%;
+            transition: all 0.2s ease;
+            margin-top: 5px;
         }
-        .highlight {
-            color: #e74c3c;
+
+        .btn-main:active {
+            transform: translate(2px, 2px);
+            box-shadow: 2px 2px 0px var(--border);
+        }
+
+        /* Door Screen Styles */
+        .door-wrapper {
+            position: relative;
+            width: 140px;
+            height: 180px;
+            margin: 20px auto 15px;
+            perspective: 1000px;
+        }
+
+        .door-frame {
+            width: 100%;
+            height: 100%;
+            background: #E8A87C;
+            border: 4px solid var(--border);
+            border-radius: 70px 70px 0 0;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 4px 4px 0px var(--border);
+        }
+
+        .door-inner-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        .door-panel {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--door-red);
+            border: 3px solid var(--border);
+            border-radius: 65px 65px 0 0;
+            transform-origin: left;
+            transition: transform 1.2s ease-in-out;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 15px;
+            z-index: 2;
+        }
+
+        .door-knob {
+            width: 12px;
+            height: 12px;
+            background: var(--yellow);
+            border: 2px solid var(--border);
+            border-radius: 50%;
+        }
+
+        .door-open .door-panel {
+            transform: rotateY(-110deg);
+        }
+
+        /* Word Search Grid */
+        .word-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 6px;
+            background: #FFF;
+            border: 3px solid var(--border);
+            border-radius: 15px;
+            padding: 12px;
+            box-shadow: 4px 4px 0px var(--border);
+            margin: 15px 0;
+        }
+
+        .letter-cell {
+            font-family: 'Caveat', cursive;
+            font-size: 20px;
+            font-weight: bold;
+            text-align: center;
+            padding: 4px 0;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .hl-chaos { background: var(--yellow); }
+        .hl-loyal { background: var(--pink); }
+        .hl-weird { background: var(--purple); }
+        .hl-bestie { background: var(--mint); }
+
+        /* Checklist Card */
+        .checklist-card {
+            background: #FFF;
+            border: 3px solid var(--border);
+            border-radius: 18px;
+            padding: 15px;
+            text-align: left;
+            box-shadow: 4px 4px 0px var(--border);
+            margin: 15px 0;
+        }
+
+        .check-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .check-box {
+            width: 18px;
+            height: 18px;
+            background: var(--mint);
+            border: 2px solid var(--border);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
             font-weight: bold;
         }
-        .btn {
-            background-color: #e74c3c;
-            color: white;
-            border: none;
-            padding: 14px 28px;
-            font-size: 16px;
-            border-radius: 30px;
+
+        /* Exhibits Grid */
+        .exhibits-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .exhibit-card {
+            background: var(--pink);
+            border: 3px solid var(--border);
+            border-radius: 15px;
+            padding: 12px 5px;
             cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3);
+            box-shadow: 3px 3px 0px var(--border);
         }
-        .btn:hover {
-            background-color: #c0392b;
-            transform: translateY(-2px);
-        }
-        .journey-content {
+
+        .exhibit-card:nth-child(2) { background: var(--purple); }
+        .exhibit-card:nth-child(3) { background: var(--yellow); }
+
+        .popup-screen {
             display: none;
-            margin-top: 30px;
-            padding-top: 20px;
-            border-top: 1px solid #eee;
-            animation: fadeIn 0.8s ease-in-out;
+            width: 100%;
+            animation: fadeIn 0.4s ease;
         }
-        .journey-content h2 {
-            color: #27ae60;
-            margin-bottom: 10px;
+
+        .pop-card {
+            background: #FFF;
+            border: 3px solid var(--border);
+            border-radius: 20px;
+            padding: 18px;
+            box-shadow: 5px 5px 0px var(--border);
+            margin-top: 12px;
+            text-align: left;
         }
-        .journey-content p {
-            color: #666;
-            line-height: 1.6;
+
+        .notebook-page {
+            background: #fffdf0;
+            border: 3px solid var(--border);
+            border-radius: 15px;
+            padding: 18px;
+            box-shadow: 5px 5px 0px var(--border);
+            font-family: 'Caveat', cursive;
+            font-size: 20px;
+            line-height: 1.4;
+            text-align: left;
+            position: relative;
+            margin-top: 12px;
         }
+
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
         }
     </style>
 </head>
 <body>
 
-    <div class="card">
-        <div class="header-tag">Special Memory Collection</div>
-        <h1>Museum of Us</h1>
-        
-        <!-- Yahan Receiver (Xyz) aur Sender (Abc) ke naam show honge -->
-        <p class="names">
-            For <span class="highlight">Xyz</span> ❤️<br>
-            <small style="font-size: 14px; color: #777;">Created with care by <strong class="highlight">Abc</strong></small>
-        </p>
+<!-- Audio Element for Soft Piano Music -->
+<audio id="pianoBgm" loop preload="auto">
+    <source src="https://assets.mixkit.co/music/preview/mixkit-a-very-happy-gospel-114.mp3" type="audio/mpeg">
+</audio>
 
-        <!-- Main Trigger Button -->
-        <button id="startBtn" class="btn">Start Journey ✨</button>
+<div class="phone-container">
+    <div class="notch"></div>
+    <div class="screen">
 
-        <!-- Button click hone par yeh section show hoga -->
-        <div id="journeySection" class="journey-content">
-            <h2>Welcome to Our Journey! 🎉</h2>
-            <p>Here begins the special gallery of memories shared between <strong>Abc</strong> and <strong>Xyz</strong>.</p>
+        <!-- STEP 1: ENTRY SCREEN -->
+        <div id="step-entry" style="width:100%;">
+            <div class="badge" style="margin-top: 15px;">WELCOME TO</div>
+            <h1 class="title">Extremely Prestigious<br><span style="color:var(--pink); text-decoration: underline;">Museum of Us</span> 🏛️</h1>
+            <p style="font-size: 12px; color: #666; margin-top: 6px;">Please don't touch anything...<br><i>...obviously, touch everything.</i></p>
+
+            <div style="margin-top: 20px;">
+                <input type="text" id="receiverName" class="custom-input" placeholder="Dost Ka Naam (e.g. Komal)" required>
+                <input type="text" id="senderName" class="custom-input" placeholder="Aapka Naam (e.g. Aman)" required>
+                <button class="btn-main" onclick="goToDoorScreen()">Start Journey ✨</button>
+            </div>
         </div>
-    </div>
 
-    <script>
-        // Button click logic
-        document.getElementById('startBtn').addEventListener('click', function() {
-            var section = document.getElementById('journeySection');
-            var button = document.getElementById('startBtn');
+        <!-- STEP 2: KNOCK KNOCK DOOR SCREEN -->
+        <div id="step-door" style="display:none; width:100%;">
+            <p style="font-family:'Caveat', cursive; font-size:24px; font-weight:bold;">knock knock...</p>
             
-            // Section ko display karega aur button hide ho jayega
-            section.style.display = 'block';
-            button.style.display = 'none';
-        });
-    </script>
+            <div class="door-wrapper" id="doorWrapper">
+                <div class="door-frame">
+                    <!-- Photo Revealed Behind Door -->
+                    <img src="1000097388.png" alt="Friendship Photo" class="door-inner-img">
+                    <div class="door-panel">
+                        <div class="door-knob"></div>
+                    </div>
+                </div>
+            </div>
 
-</body>
-</html>
+            <h1 class="title" style="margin-bottom:5px;">HEY <span id="door-rec-name" style="color:var(--pink);"></span>!</h1>
+            <p style="font-size: 12px; color: #555;">I made a tiny place on the internet for you.<br><b>There is only one rule:</b> Keep going until the end!</p>
+
+            <button class="btn-main" style="margin-top: 15px;" onclick="openDoorAndNext()">FINE 🙄</button>
+        </div>
+
+        <!-- STEP 3: WORD SEARCH PUZZLE SCREEN -->
+        <div id="step-puzzle" style="display:none; width:100%;">
+            <div class="badge">SECRET PUZZLE</div>
+            <h1 class="title">Spot the hidden words? 👀</h1>
+
+            <div class="word-grid">
+                <!-- Row 1 -->
+                <div class="letter-cell c-chaos">C</div><div class="letter-cell c-chaos">H</div><div class="letter-cell c-chaos">A</div><div class="letter-cell c-chaos">O</div><div class="letter-cell c-chaos">S</div><div class="letter-cell">C</div>
+                <!-- Row 2 -->
+                <div class="letter-cell">X</div><div class="letter-cell c-loyal">L</div><div class="letter-cell">F</div><div class="letter-cell">J</div><div class="letter-cell c-weird">W</div><div class="letter-cell">S</div>
+                <!-- Row 3 -->
+                <div class="letter-cell">V</div><div class="letter-cell c-loyal">O</div><div class="letter-cell">L</div><div class="letter-cell">A</div><div class="letter-cell c-weird">E</div><div class="letter-cell">P</div>
+                <!-- Row 4 -->
+                <div class="letter-cell">B</div><div class="letter-cell c-loyal">Y</div><div class="letter-cell">J</div><div class="letter-cell">E</div><div class="letter-cell c-weird">I</div><div class="letter-cell">D</div>
+                <!-- Row 5 -->
+                <div class="letter-cell">R</div><div class="letter-cell c-loyal">A</div><div class="letter-cell">L</div><div class="letter-cell">Y</div><div class="letter-cell c-weird">R</div><div class="letter-cell">I</div>
+                <!-- Row 6 -->
+                <div class="letter-cell c-bestie">B</div><div class="letter-cell c-bestie">E</div><div class="letter-cell c-bestie">S</div><div class="letter-cell c-bestie">T</div><div class="letter-cell c-bestie">I</div><div class="letter-cell c-bestie">E</div>
+            </div>
+
+            <p id="puzzle-wish-text" style="font-weight:bold; font-size:14px; color:var(--pink); display:none; margin-bottom:10px;">HAPPY FRIENDSHIP DAY! 💛</p>
+
+            <button class="btn-main" id="btn-reveal" onclick="revealPuzzle()">REVEAL IT, GENIUS 🤓</button>
+            <button class="btn-main" id="btn-puzzle-next" style="display:none; background:var(--mint);" onclick="goToAgreement()">CONTINUE →</button>
+        </div>
+
+        <!-- STEP 4: FRIENDSHIP AGREEMENT CHECKLIST -->
+        <div id="step-agreement" style="display:none; width:100%;">
+            <div class="badge">OFFICIAL CODE</div>
+            <h1 class="title">Friendship Rules 📝</h1>
+
+            <div class="checklist-card">
+                <div class="check-item"><div class="check-box">✓</div> Provide emotional support when required</div>
+                <div class="check-item"><div class="check-box">✓</div> Pretend to listen to repeated stories</div>
+                <div class="check-item"><div class="check-box">✓</div> Participate in questionable plans</div>
+                <div class="check-item"><div class="check-box">✓</div> Remain available for random "bro listen" messages</div>
+                <div class="check-item"><div class="check-box">✓</div> Maintain confidentiality regarding embarrassing info</div>
+                <hr style="margin:10px 0; border:1px dashed #ccc;">
+                <p style="font-size:11px; color:#666;"><b>Term:</b> Lifetime | <b>Cancellation policy:</b> None</p>
+            </div>
+
+            <button class="btn-main" style="background:var(--mint);" onclick="goToMuseumHallway()">I ACCEPT 🤝</button>
+        </div>
+
+        <!-- STEP 5: MUSEUM HALLWAY -->
+        <div id="step-hallway" style="display:none; width:100%;">
+            <div class="badge">EXHIBITS HALL</div>
+            <h1 class="title">Welcome, <span id="hallway-rec-name" style="color:var(--pink);"></span>! ✨</h1>
+            <p style="font-size: 12px; color: #555; margin-top: 4px;">Tap on any exhibit to open memory!</p>
+
+            <div class="exhibits-grid">
+                <div class="exhibit-card" onclick="openExhibit(1)">
+                    <span style="font-size:26px;">☁️</span>
+                    <div style="font-size:9px; font-weight:bold; background:#FFF; border:1px solid #1E1E1E; border-radius:6px; margin-top:5px; padding:2px;">EXHIBIT 001</div>
+                </div>
+                <div class="exhibit-card" onclick="openExhibit(2)">
+                    <span style="font-size:26px;">🐱🐭</span>
+                    <div style="font-size:9px; font-weight:bold; background:#FFF; border:1px solid #1E1E1E; border-radius:6px; margin-top:5px; padding:2px;">EXHIBIT 002</div>
+                </div>
+                <div class="exhibit-card" onclick="openExhibit(3)">
+                    <span style="font-size:26px;">💌</span>
+                    <div style="font-size:9px; font-weight:bold; background:#FFF; border:1px solid #1E1E1E; border-radius:6px; margin-top:5px; padding:2px;">EXHIBIT 003</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- EXHIBIT 1 POPUP -->
+        <div id="exhibit1" class="popup-screen">
+            <div class="badge">EXHIBIT #001</div>
+            <div class="pop-card">
+                <h3 style="font-family:'Fredoka'; color:var(--pink); margin-bottom:8px;">How We Met</h3>
+                <p style="font-size: 14px; color:#333;">"The completely random moment two people somehow became best friends."</p>
+                <hr style="margin: 12px 0; border:1px dashed #ccc;">
+                <p style="font-size: 12px; color:#666;">Nobody knew this random connection would turn into such a long-term subscription! 😂</p>
+            </div>
+            <button class="btn-main" style="margin-top:15px;" onclick="backToHallway()">← Back To Hallway</button>
+        </div>
+
+        <!-- EXHIBIT 2 POPUP (Tom & Jerry) -->
+        <div id="exhibit2" class="popup-screen">
+            <div class="badge">EXHIBIT #002</div>
+            <div class="pop-card">
+                <img src="https://media.giphy.com/media/l41K3o5TzMantyw8w/giphy.gif" alt="Tom & Jerry" style="width:100%; border-radius:10px; border:2px solid var(--border); margin-bottom:10px;">
+                <h3 style="font-family:'Fredoka'; color:var(--purple); margin-bottom:6px;">Tom & Jerry Duo 💥</h3>
+                <p style="font-size: 13px; color:#333;">Proof that our friendship is basically just two weirdos fighting, laughing, and irritating each other 24/7!</p>
+            </div>
+            <button class="btn-main" style="margin-top:15px;" onclick="backToHallway()">← Back To Hallway</button>
+        </div>
+
+        <!-- EXHIBIT 3 POPUP (Letter) -->
+        <div id="exhibit3" class="popup-screen">
+            <div class="badge">EXHIBIT #003</div>
+            <div class="notebook-page">
+                Dear <span id="note-receiver" style="color:var(--pink); font-weight:bold;"></span>,<br><br>
+                Life has a strange way of introducing us to hundreds of people. Some stay for a conversation, some for a chapter...<br><br>
+                And somehow, a very small number become part of the story itself.<br><br>
+                <mark style="background:var(--yellow); padding:2px 5px;">You're one of those people for me.</mark><br><br>
+                Thank you for being exactly the kind of weird that matches mine! 💛<br><br>
+                <div style="text-align:right; margin-top:8px;">- With Love, <br><b id="note-sender"></b></div>
+            </div>
+            <button class="btn-main" style="margin-top:15px;" onclick="backToHallway()">← Back To Hallway</button>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    let receiver = "";
+    let sender = "";
+
+    function goToDoorScreen() {
+        receiver = document.getElementById('receiverName').value.trim();
+        sender = document.getElementById('senderName').value.trim();
+
+        if(!receiver || !sender) {
+            alert("Dono naam fill kijiye!");
+            return;
+        }
+
+        // Start Piano Background Music
+        const bgm = document.getElementById('pianoBgm');
+        bgm.play().catch(e => console.log("Audio play blocked by browser policy"));
+
+        document.getElementById('door-rec-name').innerText = receiver.toUpperCase();
+        document.getElementById('step-entry').style.display = 'none';
+        document.getElementById('step-door').style.display = 'block';
+    }
+
+    function openDoorAndNext() {
+        document.getElementById('doorWrapper').classList.add('door-open');
+        setTimeout(() => {
+            document.getElementById('step-door').style.display = 'none';
+            document.getElementById('step-puzzle').style.display = 'block';
+        }, 1300);
+    }
+
+    function revealPuzzle() {
+        document.querySelectorAll('.c-chaos').forEach(e => e.classList.add('hl-chaos'));
+        document.querySelectorAll('.c-loyal').forEach(e => e.classList.add('hl-loyal'));
+        document.querySelectorAll('.c-weird').forEach(e => e.classList.add('hl-weird'));
+        document.querySelectorAll('.c-bestie').forEach(e => e.classList.add('hl-bestie'));
+
+        document.getElementById('puzzle-wish-text').style.display = 'block';
+        document.getElementById('btn-reveal').style.display = 'none';
+        document.getElementById('btn-puzzle-next').style.display = 'block';
+
+        confetti({ particleCount: 80, spread: 60, or
